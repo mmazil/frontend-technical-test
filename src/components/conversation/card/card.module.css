@@ -1,0 +1,40 @@
+.card {
+  height: 60px;
+  border: 1px solid #f2f2f2;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.card:hover {
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+.image {
+  float: left;
+  height: 100%;
+  display: block;
+  margin: 5px auto;
+  padding: 0px 10px;
+}
+
+.image > img {
+  border-radius: 50%;
+}
+
+.info {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.name {
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+.date {
+  font-size: 12px;
+  margin-right: 10px;
+  color: #cecece;
+}
