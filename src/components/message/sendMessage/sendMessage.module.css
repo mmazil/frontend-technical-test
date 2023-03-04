@@ -1,0 +1,7 @@
+.input {
+  width: 100%;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  padding-left: 10px;
+  resize: none;
+}

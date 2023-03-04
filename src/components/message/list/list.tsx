@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react"
 import { Message } from "../../../types/message"
 import { Item } from "../item/item"
+import { SendMessage } from "../sendMessage/sendMessage"
 import styles from './list.module.css'
 
 interface Props {
@@ -26,7 +27,7 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.name}>
-        <h1>Mohammed</h1>
+        <h1>Todo</h1>
       </div>
       <div className={styles.messages}>
         {
@@ -37,6 +38,7 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
           ))
         }
       </div>
+      <SendMessage />
     </div>
   )
 }
