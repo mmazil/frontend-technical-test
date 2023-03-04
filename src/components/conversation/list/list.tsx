@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { Conversation } from '../../../types/conversation'
 import { Card } from '../card/card'
@@ -10,10 +9,8 @@ interface Props {
 
 export const List: FC<Props> = ({ loggedUserId }) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const router = useRouter();
   
   useEffect(() => {
-    if(!localStorage.getItem('userToken')) router.push('/');
     fetch(`http://localhost:3005/conversations/${loggedUserId}`)
     .then(response => {
       if(!response.ok) throw new Error('Error!', { cause: { response } });

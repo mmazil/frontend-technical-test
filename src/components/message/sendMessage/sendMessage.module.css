@@ -5,3 +5,15 @@
   padding-left: 10px;
   resize: none;
 }
+
+.button {
+  width: 100%;
+  height: 35px;
+  margin-top: 15px;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+}
+
+.button:hover {
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getLoggedUserToken } from '../../utils/getLoggedUser'
 import styles from './login.module.css'
@@ -16,6 +16,10 @@ export const Login = ():ReactElement => {
     localStorage.setItem('userToken', userToken);
     router.push(`/conversations/${userToken}`);
   }
+
+  useEffect(() => {
+    localStorage.clear();
+  }, [])
 
   return (
     <div className={styles.container}>

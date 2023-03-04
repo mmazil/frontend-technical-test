@@ -7,8 +7,10 @@ interface Props {
 }
 
 const Conversation: FC<Props> = ({ conversationId }: Props) => {
+  const loggedUserId = getLoggedUserId()
+
   return (
-    <Messages conversationId={conversationId}/>
+    <Messages conversationId={conversationId} loggedUserId={loggedUserId}/>
   )
 }
 
