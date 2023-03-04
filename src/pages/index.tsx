@@ -1,12 +1,9 @@
-import { ReactElement } from 'react'
-import { List } from '../components/conversation';
-import { getLoggedUserId } from '../utils/getLoggedUserId'
+import { ReactElement} from 'react'
+import { Login } from '../components/login/login'
 
 const Home = ():ReactElement => {
-  const loggedUserId = getLoggedUserId();
-
   return (
-    <List loggedUserId={loggedUserId}/>
+    <Login />
   )
 }
 

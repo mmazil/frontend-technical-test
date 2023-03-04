@@ -59,22 +59,22 @@
     {
       "id": 1,
       "nickname": "Thibaut",
-      "token": "xxxx"
+      "token": "456"
     },
     {
       "id": 2,
       "nickname": "Jeremie",
-      "token": "xxxx"
+      "token": "123"
     },
     {
       "id": 3,
       "nickname": "Patrick",
-      "token": "xxxx"
+      "token": "321"
     },
     {
       "id": 4,
       "nickname": "Elodie",
-      "token": "xxxx"
+      "token": "444"
     }
   ]
 }
