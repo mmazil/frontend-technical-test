@@ -5,6 +5,7 @@ import { SendMessage } from "../sendMessage/sendMessage"
 import styles from './list.module.css'
 import { getLoggedUserId } from "../../../utils/getLoggedUser"
 import { User } from "../../../types/user"
+import { useFetchData } from "../../hooks/useFetchData"
 
 interface Props {
   conversationId: number,
@@ -12,19 +13,8 @@ interface Props {
 }
 
 export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  useEffect(() => {    
-    fetch(`http://localhost:3005/messages/${conversationId}`)
-    .then(response => {
-      if(!response.ok) throw new Error('Error!', { cause: { response } });
-      return response.json();
-    })
-    .then(data => {
-      setMessages(data);
-    })
-    .catch(e => console.log(e.cause))
-  }, [])
+  const url = `http://localhost:3005/messages/${conversationId}`;
+  const { data, error } = useFetchData(url);
 
   const addNewMessage = (text: string) => {
     const newData = {
@@ -50,7 +40,7 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
         conversationId,
         timestamp: data.timestamp
       }
-      setMessages([...messages, newMessage])
+      data.push(newMessage);
     })
     .catch(e => console.log(e.cause))
   }
@@ -60,13 +50,16 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
       <div className={styles.name}>
         <h1>Todo</h1>
       </div>
+      {error}
       <div className={styles.messages}>
         {
-          messages.map((message, index) => (
+          !!data.length 
+          ? data.map((message, index) => (
             message.authorId !== loggedUserId 
             ? <Item key={index} text={message.body} />
             : <Item key={index} aligned text={message.body} />
           ))
+          : <p>No message found</p>
         }
       </div>
       <SendMessage addNewMessage={addNewMessage}/>
