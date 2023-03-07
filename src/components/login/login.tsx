@@ -14,7 +14,7 @@ export const Login = ():ReactElement => {
     const userToken = getLoggedUserToken(nickname);
     if(!userToken) return;
     localStorage.setItem('userToken', userToken);
-    router.push(`/conversations/${userToken}`);
+    router.push(`/conversations`);
   }
 
   useEffect(() => {
