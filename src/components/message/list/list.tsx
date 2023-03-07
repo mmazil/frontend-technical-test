@@ -3,18 +3,23 @@ import { Message } from "../../../types/message"
 import { Item } from "../item/item"
 import { SendMessage } from "../sendMessage/sendMessage"
 import styles from './list.module.css'
-import { getLoggedUserId } from "../../../utils/getLoggedUser"
-import { User } from "../../../types/user"
 import { useFetchData } from "../../hooks/useFetchData"
+import { Conversation } from "../../../types/conversation"
+import { User } from "../../../types/user"
 
 interface Props {
-  conversationId: number,
-  loggedUserId: number
+  conversationId: Conversation['id'],
+  loggedUserId: User['id']
 }
 
 export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
-  const url = `http://localhost:3005/messages/${conversationId}`;
-  const { data, error } = useFetchData(url);
+  const messages_url = `http://localhost:3005/messages/${conversationId}`;
+  const { data, error } = useFetchData(messages_url);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    setMessages(data);
+  }, [data])
 
   const addNewMessage = (text: string) => {
     const newData = {
@@ -40,7 +45,7 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
         conversationId,
         timestamp: data.timestamp
       }
-      data.push(newMessage);
+      setMessages(prev => [...prev, newMessage]);
     })
     .catch(e => console.log(e.cause))
   }
@@ -53,8 +58,8 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
       {error}
       <div className={styles.messages}>
         {
-          !!data.length 
-          ? data.map((message, index) => (
+          !!messages.length 
+          ? messages.map((message, index) => (
             message.authorId !== loggedUserId 
             ? <Item key={index} text={message.body} />
             : <Item key={index} aligned text={message.body} />

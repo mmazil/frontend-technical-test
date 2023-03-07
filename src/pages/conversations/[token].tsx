@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Conversations: FC<Props> = ({ userToken }: Props) => {
-  const loggedUserId = getLoggedUserId(userToken);
+  const loggedUserId = getLoggedUserId();
 
   return (
     <List loggedUserId={loggedUserId}/>
