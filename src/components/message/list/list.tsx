@@ -1,25 +1,30 @@
 import React, { FC, useEffect, useState } from "react"
-import { Message } from "../../../types/message"
 import { Item } from "../item/item"
 import { SendMessage } from "../sendMessage/sendMessage"
 import styles from './list.module.css'
-import { useFetchData } from "../../hooks/useFetchData"
 import { Conversation } from "../../../types/conversation"
 import { User } from "../../../types/user"
+import { getLoggedUserId } from "../../../utils/getLoggedUser"
+import { useQuery } from "react-query"
+import { getConversation, getMessages } from "../../api/fetch"
 
 interface Props {
-  conversationId: Conversation['id'],
-  loggedUserId: User['id']
+  conversationId: Conversation['id']
 }
 
-export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
-  const messages_url = `http://localhost:3005/messages/${conversationId}`;
-  const { data, error } = useFetchData(messages_url);
-  const [messages, setMessages] = useState<Message[]>([]);
+export const List: FC<Props> = ({ conversationId }: Props) => {
+  const [loggedUserId, setLoggedUserId] = useState<User['id']>();
 
   useEffect(() => {
-    setMessages(data);
-  }, [data])
+    const token = localStorage.getItem('userToken')
+    setLoggedUserId(getLoggedUserId(token));
+  }, [])
+  
+  const { data: messages, error, isLoading } = useQuery(['messages', conversationId], 
+  () => getMessages(conversationId))
+
+  const { data: conversation, error: conversationError, isLoading: conversationLoading } = useQuery(
+    ['conversations', conversationId], () => getConversation(conversationId))
 
   const addNewMessage = (text: string) => {
     const newData = {
@@ -45,20 +50,26 @@ export const List: FC<Props> = ({ conversationId, loggedUserId }: Props) => {
         conversationId,
         timestamp: data.timestamp
       }
-      setMessages(prev => [...prev, newMessage]);
+      console.log('newMessage :>> ', newMessage);
     })
     .catch(e => console.log(e.cause))
   }
 
+  if (isLoading) return <>'Loading...'</>
+  if (error) return <>'An error has occurred'</>
+
+  let recipientNickname = conversation?.recipientNickname
+  if(conversationError) recipientNickname = 'Error'
+  if(conversationLoading) recipientNickname = 'Loading ...'
+
   return (
     <div className={styles.container}>
       <div className={styles.name}>
-        <h1>Todo</h1>
+        <h1>{recipientNickname}</h1>
       </div>
-      {error}
       <div className={styles.messages}>
         {
-          !!messages.length 
+          messages 
           ? messages.map((message, index) => (
             message.authorId !== loggedUserId 
             ? <Item key={index} text={message.body} />

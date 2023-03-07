@@ -1,17 +1,19 @@
 import { FC } from "react";
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Messages } from "../../components/message";
 import { Conversation } from "../../types/conversation";
-import { getLoggedUserId } from "../../utils/getLoggedUser";
 
 interface Props {
   conversationId: Conversation['id']
 }
 
-const Conversation: FC<Props> = ({ conversationId }: Props) => {
-  const loggedUserId = getLoggedUserId()
+const queryClient = new QueryClient()
 
+const Conversation: FC<Props> = ({ conversationId }: Props) => {
   return (
-    <Messages conversationId={conversationId} loggedUserId={loggedUserId} />
+    <QueryClientProvider client={queryClient}>
+      <Messages conversationId={conversationId} />
+    </QueryClientProvider>
   )
 }
 

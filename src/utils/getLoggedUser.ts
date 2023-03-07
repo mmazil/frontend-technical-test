@@ -10,7 +10,7 @@ export const getLoggedUserId = (userToken: User['token']): User['id'] => {
 }
 
 export const getLoggedUserToken = (nickname: User['nickname']): User['token'] => {
-  const result = db?.users?.filter(user => user.nickname === nickname)[0];
+  const result = db?.users?.filter(user => user.nickname.toLowerCase() === nickname.toLowerCase())[0];
   return result?.token || undefined;
 }
 

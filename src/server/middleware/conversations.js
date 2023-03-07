@@ -7,16 +7,24 @@ module.exports = (req, res, next) => {
   if (/conversations/.test(req.url) && req.method === 'GET') {
     const userToken = req.headers.authorization;
     const userId = req.query?.senderId
-    const connectedUser = db?.users?.filter(
-      user => user.token === userToken
-    )[0]
-    if(connectedUser && userId == connectedUser.id) {
-      const result = db?.conversations?.filter(
-        conv => conv.senderId == userId || conv.recipientId == userId
-      )
-      res.status(200).json(result)
+    if(userId) {
+      const connectedUser = db?.users?.filter(
+        user => user.token === userToken
+      )[0]
+      if(connectedUser && userId == connectedUser.id) {
+        const result = db?.conversations?.filter(
+          conv => conv.senderId == userId || conv.recipientId == userId
+        )
+        res.status(200).json(result)
+      } else {
+        throw new Error('Error!')
+      }
     } else {
-      res.status(401).json({error: 'NOT AUTH!'})
+      const conversationId = req.query?.id
+      const result = db?.conversations?.filter(
+        conv => conv.id == conversationId
+      )[0]
+      res.status(200).json(result)
     }
     return
   }
