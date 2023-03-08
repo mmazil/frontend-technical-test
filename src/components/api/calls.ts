@@ -15,3 +15,11 @@ export const getConversation = (conversationId) => {
 export const getUser = (userId) => {
   return fetch(`http://localhost:3005/user/${userId}`).then(res => res.json());
 }
+
+export const addMessage = ({conversationId, data}) => {
+  return fetch(`http://localhost:3005/messages/${conversationId}`, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  }).then(res => res.json())
+}

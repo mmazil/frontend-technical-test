@@ -5,8 +5,9 @@ import styles from './list.module.css'
 import { Conversation } from "../../../types/conversation"
 import { User } from "../../../types/user"
 import { getLoggedUserId } from "../../../utils/getLoggedUser"
-import { useQuery } from "react-query"
-import { getConversation, getMessages } from "../../api/fetch"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+import { addMessage, getConversation, getMessages } from "../../api/calls"
+import { useRouter } from "next/router"
 
 interface Props {
   conversationId: Conversation['id']
@@ -14,9 +15,11 @@ interface Props {
 
 export const List: FC<Props> = ({ conversationId }: Props) => {
   const [loggedUserId, setLoggedUserId] = useState<User['id']>();
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('userToken')
+    const token = localStorage.getItem('userToken');
+    if(!token) router.push(`/`);
     setLoggedUserId(getLoggedUserId(token));
   }, [])
   
@@ -26,37 +29,25 @@ export const List: FC<Props> = ({ conversationId }: Props) => {
   const { data: conversation, error: conversationError, isLoading: conversationLoading } = useQuery(
     ['conversations', conversationId], () => getConversation(conversationId))
 
-  const addNewMessage = (text: string) => {
-    const newData = {
-      message: text,
-      timestamp: Date.now()
-    }
-    fetch(`http://localhost:3005/messages/${conversationId}`, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newData)
-    })
-    .then(response => {
-      if(!response.ok) throw new Error('Error!', { cause: { response } });
-      return response.json();
-    })
-    .then(data => {
-      const newMessage = {
-        id: data.id,
-        body: data.message,
-        authorId: loggedUserId,
-        conversationId,
-        timestamp: data.timestamp
-      }
-      console.log('newMessage :>> ', newMessage);
-    })
-    .catch(e => console.log(e.cause))
-  }
+  const queryClient = useQueryClient();
 
-  if (isLoading) return <>'Loading...'</>
-  if (error) return <>'An error has occurred'</>
+  const { mutate } = useMutation({
+    mutationFn: addMessage,
+    onSuccess: newMessage => {
+      queryClient.setQueryData(['messages', newMessage.id], newMessage)
+    }
+  })
+
+  const addNewMessage = (text: string) => {
+    const data = {
+      conversationId: Number(conversationId),
+      timestamp: Date.now(),
+      authorId: loggedUserId,
+      body: text
+    }
+
+    mutate({conversationId, data})
+  }
 
   let recipientNickname = conversation?.recipientNickname
   if(conversationError) recipientNickname = 'Error'
@@ -64,8 +55,10 @@ export const List: FC<Props> = ({ conversationId }: Props) => {
 
   return (
     <div className={styles.container}>
+      {error && 'Error !'}
+      {isLoading && 'Loading ...'}
       <div className={styles.name}>
-        <h1>{recipientNickname}</h1>
+        {!error && !isLoading && <h1>{recipientNickname}</h1>}
       </div>
       <div className={styles.messages}>
         {

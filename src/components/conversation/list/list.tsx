@@ -1,17 +1,20 @@
+import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { User } from '../../../types/user'
 import { getLoggedUserId } from '../../../utils/getLoggedUser'
-import { getConversations } from '../../api/fetch'
+import { getConversations } from '../../api/calls'
 import { Card } from '../card/card'
 import styles from './list.module.css'
 
 export const List: FC = () => {
   const [userToken, setUserToken] = useState<User['token']>();
   const [loggedUserId, setLoggedUserId] = useState<User['id']>();
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('userToken')
+    const token = localStorage.getItem('userToken');
+    if(!token) router.push(`/`);
     setUserToken(token);
     setLoggedUserId(getLoggedUserId(token));
   }, [])
