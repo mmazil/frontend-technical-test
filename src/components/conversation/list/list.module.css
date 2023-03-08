@@ -4,3 +4,10 @@
   width: 60%;
   margin: 0px auto
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .container {
+    width: 100%;
+  }
+}
