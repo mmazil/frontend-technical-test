@@ -5,6 +5,7 @@ import { User } from '../../../types/user'
 import { getLoggedUserId } from '../../../utils/getLoggedUser'
 import { getConversations } from '../../api/calls'
 import { Card } from '../card/card'
+import { NewConversation } from '../newConversation/newConversation'
 import styles from './list.module.css'
 
 export const List: FC = () => {
@@ -30,6 +31,8 @@ export const List: FC = () => {
       {
         conversations && conversations.map((conv, index) => <Card key={index} conversation={conv}/>)
       }
+
+      <NewConversation loggedUserId={loggedUserId}/>
     </div>
   )
 }

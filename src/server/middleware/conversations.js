@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
         )
         res.status(200).json(result)
       } else {
-        throw new Error('Error!')
+        throw new Error('You are not authorized!')
       }
     } else {
       const conversationId = req.query?.id
